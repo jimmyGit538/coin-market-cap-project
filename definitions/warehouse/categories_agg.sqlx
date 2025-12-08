@@ -1,0 +1,35 @@
+config {
+    type: "table",
+    schema: "warehouse"
+}
+
+SELECT
+  /*
+  keys
+  */
+  id AS category_id,
+  /*
+  dimensions
+  */
+  name,
+  title,
+  description,
+  /*
+  metrics
+  */
+  num_tokens,
+  avg_price_change,
+  market_cap,
+  market_cap_change,
+  volume,
+  volume_change,
+  /*
+  dates
+  */
+  PARSE_TIMESTAMP(
+  -- The format string specifies the exact layout of your input string
+  "%Y-%m-%dT%H:%M:%E*S",
+  -- Your input string
+  REPLACE(last_updated, "Z", "")) AS last_updated
+  FROM
+    ${ref("categories_raw")}
