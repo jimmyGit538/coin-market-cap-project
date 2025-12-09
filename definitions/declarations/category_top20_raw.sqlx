@@ -1,0 +1,7 @@
+config {
+  type: "declaration",
+  database: "coinmarketcapproject",
+  schema: "crypto_raw",
+  name: "category_top20_raw"
+}
+
