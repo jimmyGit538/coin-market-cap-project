@@ -35,7 +35,7 @@ SELECT
   dates
   */
   PARSE_TIMESTAMP( "%Y-%m-%dT%H:%M:%E*S", REPLACE(first_historical_data, "Z", "")) AS first_historical_data,
-  PARSE_TIMESTAMP( "%Y-%m-%dT%H:%M:%E*S", REPLACE(last_historical_data, "Z", "")) AS first_historical_data,
+  PARSE_TIMESTAMP( "%Y-%m-%dT%H:%M:%E*S", REPLACE(last_historical_data, "Z", "")) AS last_historical_data,
 FROM
   ${ref("map_gcp_raw")}
 QUALIFY

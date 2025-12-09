@@ -37,4 +37,4 @@ SELECT
   WHERE
     num_tokens > 0
   QUALIFY
-    ROW_NUMBER() OVER(PARTITION BY id ORDER BY ingestion_timestamp_utc DESC)
+    ROW_NUMBER() OVER(PARTITION BY id ORDER BY ingestion_timestamp_utc DESC) = 1
