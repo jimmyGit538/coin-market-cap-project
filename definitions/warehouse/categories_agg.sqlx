@@ -32,4 +32,9 @@ SELECT
   -- Your input string
   REPLACE(last_updated, "Z", "")) AS last_updated
   FROM
-    ${ref("categories_raw")}
+    ${ref("categories_gcp_raw")}
+    --No need to include data from categories with no tokens
+  WHERE
+    num_tokens > 0
+  QUALIFY
+    ROW_NUMBER() OVER(PARTITION BY id ORDER BY ingestion_timestamp_utc DESC)

@@ -1,0 +1,42 @@
+config {
+    type: "incremental",
+    uniqueKey: ["id"],
+    description: "Returns a mapping of all cryptocurrencies to unique CoinMarketCap ids.",
+    columns: {
+        id: "The unique cryptocurrency ID for this cryptocurrency.",
+        rank: "The rank of this cryptocurrency.",
+        name: "The name of this cryptocurrency.",
+        symbol: "The ticker symbol for this cryptocurrency, always in all caps.",
+        slug: "The web URL friendly shorthand version of this cryptocurrency name.",
+        is_active: "1 if this cryptocurrency has at least 1 active market currently being tracked by the platform, otherwise 0."
+    },
+    schema: "warehouse"
+}
+
+SELECT
+  /*
+  keys
+  */
+  id AS cmc_id,
+  /*
+  dimensions
+  */
+  rank,
+  name,
+  symbol,
+  slug,
+  is_active = 1 AS is_active,
+  platform.name AS platform_name,
+  platform.slug AS platform_slug,
+  platform.symbol AS platform_symbol,
+  platform.token_address AS platform_token_address,
+  --status
+  /*
+  dates
+  */
+  PARSE_TIMESTAMP( "%Y-%m-%dT%H:%M:%E*S", REPLACE(first_historical_data, "Z", "")) AS first_historical_data,
+  PARSE_TIMESTAMP( "%Y-%m-%dT%H:%M:%E*S", REPLACE(last_historical_data, "Z", "")) AS first_historical_data,
+FROM
+  ${ref("map_gcp_raw")}
+QUALIFY
+  ROW_NUMBER() OVER(PARTITION BY id ORDER BY ingestion_timestamp_utc DESC) = 1
