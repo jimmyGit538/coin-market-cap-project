@@ -8,7 +8,8 @@ config {
         name: "The name of this cryptocurrency.",
         symbol: "The ticker symbol for this cryptocurrency, always in all caps.",
         slug: "The web URL friendly shorthand version of this cryptocurrency name.",
-        is_active: "1 if this cryptocurrency has at least 1 active market currently being tracked by the platform, otherwise 0."
+        is_active: "1 if this cryptocurrency has at least 1 active market currently being tracked by the platform, otherwise 0.",
+        platform_name: "Testing"
     },
     schema: "warehouse"
 }
