@@ -1,7 +1,7 @@
 config {
     type: "incremental",
     tags: ["warehouse"],
-    uniqueKey: ["id"],
+    uniqueKey: ["cmc_id"],
     description: "Returns a mapping of all cryptocurrencies to unique CoinMarketCap ids.",
     columns: {
         id: "The unique cryptocurrency ID for this cryptocurrency.",
