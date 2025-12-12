@@ -5,7 +5,23 @@ config {
 }
 
 SELECT
-  date
+  date,
+  DATE_TRUNC(date, ISOWEEK) AS date_isoweek,
+  DATE_TRUNC(date, MONTH) AS date_month,
+  DATE_TRUNC(date, QUARTER) AS date_quarter,
+  DATE_TRUNC(date, YEAR) AS date_year,
+  EXTRACT(ISOWEEK
+  FROM
+    date) AS int_isoweek,
+  EXTRACT(month
+  FROM
+    date) AS int_month,
+  EXTRACT(quarter
+  FROM
+    date) AS int_quarter,
+  EXTRACT(year
+  FROM
+    date) AS int_year,
 FROM
   UNNEST (GENERATE_DATE_ARRAY("2025-12-01", CURRENT_DATE(), INTERVAL 1 DAY)) AS date
 ORDER BY
