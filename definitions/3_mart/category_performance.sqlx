@@ -3,7 +3,7 @@ config {
     tags: ["mart"],
     bigquery: {
         partitionBy: "date",
-        clusterBy: ["name"]
+        clusterBy: ["category_name"]
     },
     schema: "mart"
 }
