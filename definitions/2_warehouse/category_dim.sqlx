@@ -1,0 +1,29 @@
+config {
+    type: "table",
+    tags: ["warehouse"],
+    schema: "warehouse"
+}
+
+SELECT
+  /*
+  keys
+  */
+  id AS category_id,
+  /*
+  dimensions
+  */
+  name,
+  title,
+  description,
+  /*
+  dates
+  */
+  PARSE_TIMESTAMP( "%Y-%m-%dT%H:%M:%E*S", REPLACE(last_updated, "Z", "")) AS last_updated,
+  ingestion_timestamp_utc,
+FROM
+  ${ref("category_top20_raw")}
+  --No need to include data from categories with no tokens
+WHERE
+  num_tokens > 0
+QUALIFY
+  ROW_NUMBER() OVER(PARTITION BY id ORDER BY ingestion_timestamp_utc DESC) = 1

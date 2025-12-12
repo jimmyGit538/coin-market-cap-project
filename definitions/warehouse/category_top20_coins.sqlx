@@ -1,6 +1,0 @@
-config {
-    type: "table",
-    schema: "warehouse",
-    disabled: true
-}
-

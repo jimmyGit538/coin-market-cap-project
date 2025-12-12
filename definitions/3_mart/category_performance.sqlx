@@ -1,0 +1,28 @@
+config {
+    type: "table",
+    tags: ["mart"],
+    schema: "mart"
+}
+
+SELECT
+  dates.date,
+  cd.name,
+  cd.title,
+  cd.description,
+  agg.num_tokens,
+  agg.market_cap,
+  agg.volume,
+FROM
+  ${ref("date_dim")} dates
+LEFT JOIN
+  ${ref("category_agg_fact")} agg
+USING
+  (date)
+LEFT JOIN
+  ${ref("coins_fact")} coin
+USING
+  (date)
+LEFT JOIN
+  ${ref("category_dim")} cd
+ON
+  agg.category_id=cd.category_id

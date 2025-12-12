@@ -1,0 +1,27 @@
+config {
+    type: "table",
+    tags: ["warehouse"],
+    schema: "warehouse"
+}
+
+SELECT
+  /*
+  keys
+  */
+  category_id,
+  coin_id AS cmc_id,
+  /*
+  metrics
+  */
+  coin_market_cap,
+  coin_price,
+  coin_volume_24h,
+  /*
+  dates
+  */
+  DATE(ingestion_timestamp_utc) AS date
+FROM
+  ${ref("category_top20_coins_raw")}
+  --using this QUALIFY statement to only pull the most current coin data in the case of multiple data inserts in one 24hr period.
+QUALIFY
+  ROW_NUMBER() OVER(PARTITION BY cmc_id, ingestion_timestamp_utc ORDER BY ingestion_timestamp_utc DESC) = 1
