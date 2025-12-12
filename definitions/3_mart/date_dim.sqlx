@@ -1,0 +1,12 @@
+config {
+    type: "table",
+    tags: ["mart"],
+    schema: "mart"
+}
+
+SELECT
+  date
+FROM
+  UNNEST (GENERATE_DATE_ARRAY("2025-12-01", CURRENT_DATE(), INTERVAL 1 DAY)) AS date
+ORDER BY
+  date DESC
