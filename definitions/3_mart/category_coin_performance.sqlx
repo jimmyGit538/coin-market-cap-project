@@ -3,24 +3,31 @@ config {
     tags: ["mart"],
     bigquery: {
         partitionBy: "date",
-        clusterBy: ["coin_name", "platform_name"]
+        clusterBy: ["category_name"]
     },
     schema: "mart"
 }
 
 SELECT
-  coin.date,
+  catmap.date,
+  catmap.category_id,
   coin.cmc_id,
-  map.name AS coin_name,
-  map.symbol,
-  map.platform_name,
-  map.platform_symbol,
+  cd.name as category_name,
   coin.coin_market_cap,
   coin.coin_price,
   coin.coin_volume_24h
 FROM
+  ${ref("map_category_coin")} catmap
+LEFT JOIN
   ${ref("coins_fact")} coin
+USING
+  (cmc_id,
+    date)
 LEFT JOIN
   ${ref("map_cmc_ids")} map
 USING
   (cmc_id)
+LEFT JOIN
+  ${ref("category_dim")} cd
+USING
+  (category_id)
