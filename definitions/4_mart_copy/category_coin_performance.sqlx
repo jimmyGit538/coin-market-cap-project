@@ -1,12 +1,12 @@
 config {
-  project: "coin-market-cap-api",
+    project: "coin-market-cap-api",
     type: "table",
     tags: ["mart"],
     bigquery: {
         partitionBy: "date",
         clusterBy: ["category_name"]
     },
-    schema: "mart"
+    schema: "mart_copy"
 }
 
 SELECT

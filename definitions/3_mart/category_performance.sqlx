@@ -16,7 +16,7 @@ SELECT
   SUM(coin_market_cap) as category_market_cap,
   sum(coin_volume_24h) as category_volume_24h
 FROM
-  ${ref("category_coin_performance")} ccp
+  ${ref("mart", "category_coin_performance")} ccp
 LEFT JOIN
   ${ref("category_dim")} cd
 USING
