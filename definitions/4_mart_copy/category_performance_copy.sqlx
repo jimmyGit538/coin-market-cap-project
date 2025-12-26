@@ -1,0 +1,24 @@
+config {
+    type: "table",
+    tags: ["mart"],
+    bigquery: {
+        partitionBy: "date",
+        clusterBy: ["category_name"]
+    },
+    schema: "mart"
+}
+
+SELECT
+  ccp.date,
+  ccp.category_name,
+  ccp.category_id,
+  count(distinct cmc_id) as num_tokens,
+  SUM(coin_market_cap) as category_market_cap,
+  sum(coin_volume_24h) as category_volume_24h
+FROM
+  ${ref("category_coin_performance")} ccp
+LEFT JOIN
+  ${ref("category_dim")} cd
+USING
+  (category_id)
+  GROUP BY ALL

@@ -1,0 +1,40 @@
+config {
+  project: "coin-market-cap-api",
+    type: "table",
+    tags: ["mart"],
+    bigquery: {
+        partitionBy: "date",
+        clusterBy: ["category_name"]
+    },
+    schema: "mart"
+}
+
+SELECT
+  coin.date,
+  d.* EXCEPT(date),
+  catmap.category_id,
+  coin.cmc_id,
+  cat_dim.name AS category_name,
+  coin_dim.name AS coin_name,
+  coin_dim.symbol AS coin_symbol,
+  coin.market_cap AS coin_market_cap,
+  coin.price AS coin_price,
+  coin.volume_24h AS coin_volume_24h
+FROM
+  ${ref("coins_fact")} coin
+LEFT JOIN
+  ${ref("date_dim")} AS d
+USING
+  (date)
+LEFT JOIN
+  ${ref("map_category_coin")} catmap
+USING
+  (cmc_id)
+LEFT JOIN
+  ${ref("coins_dim")} coin_dim
+USING
+  (cmc_id)
+LEFT JOIN
+  ${ref("category_dim")} cat_dim
+ON
+  catmap.category_id=cat_dim.category_id
