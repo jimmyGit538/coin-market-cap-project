@@ -23,6 +23,11 @@ SELECT
   DATE(quote_timestamp) AS date
 FROM
   ${ref("quotes_historical_30d_29_raw")}
-  --using this QUALIFY statement to only pull the most current coin data in the case of multiple data inserts in one 24hr period.
+WHERE
+  coin_id != 23624
+  --This ID is showing massive market cap for Dec 13th/14th which is clearly a data error.
 QUALIFY
-  ROW_NUMBER() OVER(PARTITION BY cmc_id, DATE(quote_timestamp) ORDER BY imported_at_utc DESC) = 1
+  ROW_NUMBER() OVER(PARTITION BY cmc_id, DATE(quote_timestamp)
+  ORDER BY
+    imported_at_utc DESC) = 1
+    --using this QUALIFY statement to only pull the most current coin data in the case of multiple data inserts in one 24hr period.
