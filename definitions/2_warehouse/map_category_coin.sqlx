@@ -13,9 +13,9 @@ SELECT
   /*
   dates
   */
-  DATE(ingestion_timestamp_utc) AS date
+  ingestion_timestamp_utc
 FROM
-  ${ref("category_top20_coins_raw")}
+  ${ref("category_top20_coins_29_raw")}
   --using this QUALIFY statement to only pull the most current coin data in the case of multiple data inserts in one 24hr period.
 QUALIFY
-  ROW_NUMBER() OVER(PARTITION BY cmc_id, category_id, DATE(ingestion_timestamp_utc) ORDER BY ingestion_timestamp_utc DESC) = 1
+  ROW_NUMBER() OVER(PARTITION BY cmc_id, category_id ORDER BY ingestion_timestamp_utc DESC) = 1

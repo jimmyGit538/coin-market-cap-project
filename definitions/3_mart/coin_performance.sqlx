@@ -21,6 +21,6 @@ SELECT
 FROM
   ${ref("coins_fact")} coin
 LEFT JOIN
-  ${ref("map_cmc_ids")} map
+  ${ref("coins_dim")} map
 USING
   (cmc_id)

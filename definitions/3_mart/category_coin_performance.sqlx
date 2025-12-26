@@ -9,25 +9,31 @@ config {
 }
 
 SELECT
-  catmap.date,
+  coin.date,
+  d.* EXCEPT(date),
   catmap.category_id,
   coin.cmc_id,
-  cd.name as category_name,
-  coin.coin_market_cap,
-  coin.coin_price,
-  coin.coin_volume_24h
+  cat_dim.name AS category_name,
+  coin_dim.name AS coin_name,
+  coin_dim.symbol AS coin_symbol,
+  coin.market_cap AS coin_market_cap,
+  coin.price AS coin_price,
+  coin.volume_24h AS coin_volume_24h
 FROM
-  ${ref("map_category_coin")} catmap
-LEFT JOIN
   ${ref("coins_fact")} coin
-USING
-  (cmc_id,
-    date)
 LEFT JOIN
-  ${ref("map_cmc_ids")} map
+  ${ref("date_dim")} AS d
+USING
+  (date)
+LEFT JOIN
+  ${ref("map_category_coin")} catmap
 USING
   (cmc_id)
 LEFT JOIN
-  ${ref("category_dim")} cd
+  ${ref("coins_dim")} coin_dim
 USING
-  (category_id)
+  (cmc_id)
+LEFT JOIN
+  ${ref("category_dim")} cat_dim
+ON
+  catmap.category_id=cat_dim.category_id

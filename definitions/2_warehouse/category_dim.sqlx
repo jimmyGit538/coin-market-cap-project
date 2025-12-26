@@ -8,7 +8,7 @@ SELECT
   /*
   keys
   */
-  id AS category_id,
+  id as category_id,
   /*
   dimensions
   */
@@ -21,7 +21,7 @@ SELECT
   PARSE_TIMESTAMP( "%Y-%m-%dT%H:%M:%E*S", REPLACE(last_updated, "Z", "")) AS last_updated,
   ingestion_timestamp_utc,
 FROM
-  ${ref("category_top20_raw")}
+  ${ref("category_top20_29_raw")}
   --No need to include data from categories with no tokens
 WHERE
   num_tokens > 0
