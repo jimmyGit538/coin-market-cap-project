@@ -23,7 +23,7 @@ SELECT
   */
   DATE(ingestion_timestamp_utc) as date,
 FROM
-  ${ref("category_top20_raw")}
+  ${ref("category_top20_29_raw")}
   --No need to include data from categories with no tokens
 WHERE
   num_tokens > 0

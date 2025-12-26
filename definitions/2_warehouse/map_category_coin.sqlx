@@ -9,20 +9,13 @@ SELECT
   keys
   */
   coin_id AS cmc_id,
-  /*
-  metrics
-  */
-  market_cap,
-  price,
-  volume_24h,
-  circulating_supply,
-  total_supply,
+  category_id,
   /*
   dates
   */
-  DATE(quote_timestamp) AS date
+  ingestion_timestamp_utc
 FROM
-  ${ref("quotes_historical_30d_29_raw")}
+  ${ref("category_top20_coins_29_raw")}
   --using this QUALIFY statement to only pull the most current coin data in the case of multiple data inserts in one 24hr period.
 QUALIFY
-  ROW_NUMBER() OVER(PARTITION BY cmc_id, DATE(quote_timestamp) ORDER BY imported_at_utc DESC) = 1
+  ROW_NUMBER() OVER(PARTITION BY cmc_id, category_id ORDER BY ingestion_timestamp_utc DESC) = 1
