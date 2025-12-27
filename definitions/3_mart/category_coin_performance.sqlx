@@ -8,6 +8,8 @@ config {
     schema: "mart"
 }
 
+
+
 SELECT
   coin.date,
   d.* EXCEPT(date),
