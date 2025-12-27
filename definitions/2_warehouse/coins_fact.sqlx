@@ -15,8 +15,8 @@ WITH
     ${ref("quotes_historical_30d_29_raw")}
   WHERE
     coin_id != 23624
-    AND (coin_id !=34472
-      AND NOT DATE(quote_timestamp) BETWEEN '2025-06-01'
+    AND NOT (coin_id = 34472
+      AND DATE(quote_timestamp) BETWEEN '2025-06-01'
       AND '2025-06-12')
       --This ID is showing massive market cap for Dec 13th/14th which is clearly a data error.
       )
