@@ -44,7 +44,7 @@ WITH
   FROM
     cleaned
   QUALIFY
-    ROW_NUMBER() OVER(PARTITION BY cmc_id, DATE(quote_timestamp)
+    ROW_NUMBER() OVER(PARTITION BY coin_id, DATE(quote_timestamp)
     ORDER BY
       imported_at_utc DESC) = 1
       --using this QUALIFY statement to only pull the most current coin data in the case of multiple data inserts in one 24hr period.
