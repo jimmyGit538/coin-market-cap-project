@@ -2,7 +2,7 @@ config {
     type: "table",
     tags: ["warehouse"],
     bigquery: {
-        partitionBy: "date"
+        partitionBy: "DATE(quote_timestamp)"
     },
     schema: "warehouse"
 }
