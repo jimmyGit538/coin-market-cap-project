@@ -1,0 +1,63 @@
+config {
+    type: "table",
+    tags: ["mart"],
+    bigquery: {
+        partitionBy: "date",
+        clusterBy: ["category_name"]
+    },
+    schema: "mart"
+}
+
+WITH
+  base AS (
+  SELECT
+    date,
+    category_name,
+    category_id,
+    num_tokens,
+    category_market_cap,
+    DENSE_RANK() OVER(PARTITION BY date ORDER BY category_market_cap DESC ) AS category_rank
+  FROM
+    ${ref("mart", "category_performance")} cp )
+    /*
+    -
+    -
+    */
+SELECT
+  base.date,
+  base.category_name,
+  base.category_id,
+  base.num_tokens,
+  base.category_market_cap,
+  base.category_rank,
+  -- 30 days prior
+  t30.num_tokens AS num_tokens_30d,
+  t30.category_market_cap AS category_market_cap_30d,
+  t30.category_rank AS category_rank_30d,
+  -- 60 days prior
+  t60.num_tokens AS num_tokens_60d,
+  t60.category_market_cap AS category_market_cap_60d,
+  t60.category_rank AS category_rank_60d,
+  -- 90 days prior
+  t90.num_tokens AS num_tokens_90d,
+  t90.category_market_cap AS category_market_cap_90d,
+  t90.category_rank AS category_rank_90d
+FROM
+  base
+LEFT JOIN
+  base t30
+ON
+  base.category_id=t30.category_id
+  AND t30.date = DATE_SUB(base.date, INTERVAL 30 DAY)
+LEFT JOIN
+  base t60
+ON
+  base.category_id=t60.category_id
+  AND t60.date = DATE_SUB(base.date, INTERVAL 60 DAY)
+LEFT JOIN
+  base t90
+ON
+  base.category_id=t90.category_id
+  AND t90.date = DATE_SUB(base.date, INTERVAL 90 DAY)
+WHERE
+  base.date = '2025-12-21'

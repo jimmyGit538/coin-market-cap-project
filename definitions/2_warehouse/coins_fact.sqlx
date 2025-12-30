@@ -1,16 +1,14 @@
 config {
     type: "table",
     tags: ["warehouse"],
-    bigquery: {
-        partitionBy: "DATE(quote_timestamp)"
-    },
     schema: "warehouse"
 }
 
 WITH
   cleaned AS (
   SELECT
-    *
+    * EXCEPT(quote_timestamp),
+    DATE(quote_timestamp) AS date
   FROM
     ${ref("quotes_historical_30d_29_raw")}
   WHERE
@@ -40,11 +38,11 @@ WITH
     /*
     dates
     */
-    DATE(quote_timestamp) AS date
+    date
   FROM
     cleaned
   QUALIFY
-    ROW_NUMBER() OVER(PARTITION BY coin_id, DATE(quote_timestamp)
+    ROW_NUMBER() OVER(PARTITION BY coin_id, date
     ORDER BY
       imported_at_utc DESC) = 1
       --using this QUALIFY statement to only pull the most current coin data in the case of multiple data inserts in one 24hr period.
