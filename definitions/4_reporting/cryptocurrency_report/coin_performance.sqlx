@@ -1,0 +1,32 @@
+config {
+    project: "coin-market-cap-api",
+    type: "table",
+    tags: ["reporting"],
+    bigquery: {
+        partitionBy: "date",
+        clusterBy: ["category_name", "coin_name"]
+    },
+    schema: "reporting"
+}
+
+SELECT
+  date,
+  /*
+  keys
+  */
+  category_id,
+  cmc_id,
+  /*
+  dim
+  */
+  category_name,
+  coin_name,
+  coin_symbol,
+  /*
+  metrics
+  */
+  coin_volume_24h,
+  coin_price,
+  coin_market_cap coin_market_cap
+FROM
+  ${ref("category_coin_performance")}

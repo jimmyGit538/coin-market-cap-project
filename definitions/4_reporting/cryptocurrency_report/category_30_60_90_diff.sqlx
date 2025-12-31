@@ -1,11 +1,12 @@
 config {
+  project: "coin-market-cap-api",
     type: "table",
-    tags: ["mart"],
+    tags: ["reporting"],
     bigquery: {
         partitionBy: "date",
         clusterBy: ["category_name"]
     },
-    schema: "mart"
+    schema: "reporting"
 }
 
 WITH

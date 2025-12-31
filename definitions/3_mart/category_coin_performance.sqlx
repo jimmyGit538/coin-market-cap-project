@@ -34,6 +34,6 @@ LEFT JOIN
 USING
   (cmc_id)
 LEFT JOIN
-  ${ref("category_dim")} cat_dim
+  ${ref("mart", "category_dim")} cat_dim
 ON
   catmap.category_id=cat_dim.category_id
