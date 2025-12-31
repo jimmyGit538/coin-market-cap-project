@@ -1,5 +1,5 @@
 config {
-  project: "coin-market-cap-api",
+    project: "coin-market-cap-api",
     type: "table",
     tags: ["reporting"],
     bigquery: {
@@ -19,11 +19,13 @@ WITH
     category_market_cap,
     DENSE_RANK() OVER(PARTITION BY date ORDER BY category_market_cap DESC ) AS category_rank
   FROM
-    ${ref("mart", "category_performance")} cp )
-    /*
-    -
-    -
-    */
+    ${ref("mart", "category_performance")} cp ),
+  /*
+  -
+  -
+  */
+  --brings 30, 60, 90 day values together.
+  joins AS (
 SELECT
   base.date,
   base.category_name,
@@ -59,6 +61,52 @@ LEFT JOIN
   base t90
 ON
   base.category_id=t90.category_id
-  AND t90.date = DATE_SUB(base.date, INTERVAL 90 DAY)
-WHERE
-  base.date = '2025-12-21'
+  AND t90.date = DATE_SUB(base.date, INTERVAL 90 DAY) ),
+  /*
+  --
+  --
+  */
+  --does the math to calculate differences and perc gain/decline
+  calc AS (
+SELECT
+  date,
+  category_name,
+  category_id,
+  num_tokens,
+  category_market_cap,
+  category_rank,
+  -- 30 days prior
+  num_tokens - num_tokens_30d AS token_diff_30d,
+  SAFE_DIVIDE((category_market_cap - category_market_cap_30d), category_market_cap_30d) AS market_cap_perc_chg_30d,
+  category_rank - category_rank_30d AS rank_diff_30d,
+  -- 60 days prior
+  num_tokens - num_tokens_60d AS token_diff_60d,
+  SAFE_DIVIDE((category_market_cap - category_market_cap_60d), category_market_cap_60d) AS market_cap_perc_chg_60d,
+  category_rank - category_rank_60d AS rank_diff_60d,
+  -- 90 days prior
+  num_tokens - num_tokens_90d AS token_diff_90d,
+  SAFE_DIVIDE((category_market_cap - category_market_cap_90d), category_market_cap_90d) AS market_cap_perc_chg_90d,
+  category_rank - category_rank_90d AS rank_diff_90d
+FROM
+  joins )
+  /*
+  --
+  */
+SELECT
+  date,
+  category_name,
+  category_id,
+  num_tokens,
+  category_market_cap,
+  category_rank,
+  token_diff_30d,
+  token_diff_60d,
+  token_diff_90d,
+  market_cap_perc_chg_30d,
+  market_cap_perc_chg_60d,
+  market_cap_perc_chg_90d,
+  rank_diff_30d,
+  rank_diff_60d,
+  rank_diff_90d
+FROM
+  calc
