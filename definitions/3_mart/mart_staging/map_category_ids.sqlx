@@ -1,0 +1,21 @@
+config {
+    type: "table",
+    tags: ["mart"],
+    schema: "mart_staging"
+}
+
+  /*
+  combining Ids to create one "Privacy" category
+  */
+SELECT
+  /*
+  keys
+  */
+  category_id,
+  CASE
+    WHEN category_id IN('692b0302c0b341673d681a27', '604f273debccdd50cd175fb0', '692b02c1c0b341673d681a21' ) THEN '11111'
+    ELSE category_id
+END
+  AS category_id_new
+FROM
+  ${ref("warehouse", "category_dim")}

@@ -1,0 +1,48 @@
+config {
+    type: "table",
+    tags: ["mart"],
+    schema: "mart_staging"
+}
+
+  /*
+  To avoid duplicate category names, using this view to consolidate categories where necessary.
+  For example, RAW data contains 'Privacy', 'Privacy Coin', and 'Privacy Blockchain'.
+  These are being consolidated into 'Privacy'.
+  */
+SELECT
+  /*
+  keys
+  */
+  mc.category_id_new AS category_id,
+  /*
+  dimensions
+  */
+  CASE
+    WHEN mc.category_id_new ='11111' THEN 'Privacy'
+    ELSE name
+END
+  AS name,
+  /*
+  -
+  */
+  CASE
+    WHEN mc.category_id_new ='11111' THEN 'Privacy'
+    ELSE title
+END
+  AS title,
+  CASE
+    WHEN mc.category_id_new ='11111' THEN 'Privacy'
+    ELSE description
+END
+  AS description,
+  /*
+  dates
+  */
+  cd.last_updated,
+  cd.ingestion_timestamp_utc,
+FROM
+  ${ref("warehouse", "category_dim")} cd
+LEFT JOIN
+  ${ref("mart_staging", "map_category_ids")} mc
+USING
+  (category_id)

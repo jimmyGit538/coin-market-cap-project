@@ -1,0 +1,22 @@
+config {
+    type: "table",
+    tags: ["mart"],
+    schema: "mart_staging"
+}
+
+SELECT
+  /*
+  keys
+  */
+  map.cmc_id,
+  cat_dim.category_id,
+  /*
+  dates
+  */
+  map.ingestion_timestamp_utc
+FROM
+  ${ref("warehouse", "map_category_coin")} map
+LEFT JOIN
+  ${ref("mart_staging", "category_dim")} cat_dim
+USING
+  (category_id)

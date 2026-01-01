@@ -22,18 +22,18 @@ SELECT
 FROM
   ${ref("coins_fact")} coin
 LEFT JOIN
-  ${ref("date_dim")} AS d
+  ${ref("mart_staging", "date_dim")} AS d
 USING
   (date)
 LEFT JOIN
-  ${ref("map_category_coin")} catmap
+  ${ref("mart_staging", "map_category_coin")} catmap
 USING
   (cmc_id)
 LEFT JOIN
-  ${ref("coins_dim")} coin_dim
+  ${ref("warehouse", "coins_dim")} coin_dim
 USING
   (cmc_id)
 LEFT JOIN
-  ${ref("mart", "category_dim")} cat_dim
+  ${ref("mart_staging", "category_dim")} cat_dim
 ON
   catmap.category_id=cat_dim.category_id
