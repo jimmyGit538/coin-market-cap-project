@@ -12,13 +12,14 @@ SELECT
   ccp.date,
   ccp.category_name,
   ccp.category_id,
-  count(distinct cmc_id) as num_tokens,
-  SUM(coin_market_cap) as category_market_cap,
-  sum(coin_volume_24h) as category_volume_24h
+  COUNT(DISTINCT cmc_id) AS num_tokens,
+  SUM(coin_market_cap) AS category_market_cap,
+  SUM(coin_volume_24h) AS category_volume_24h
 FROM
   ${ref("mart", "category_coin_performance")} ccp
 LEFT JOIN
-  ${ref("mart", "category_dim")} cd
+  ${ref("mart_staging", "category_dim")} cd
 USING
   (category_id)
-  GROUP BY ALL
+GROUP BY
+  ALL
