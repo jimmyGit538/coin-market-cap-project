@@ -7,7 +7,7 @@ config {
 WITH
   cleaned AS (
   SELECT
-    * EXCEPT(quote_timestamp),
+    * EXCEPT(quote_timestamp, category_id),
     DATE(quote_timestamp) AS date
   FROM
     ${ref("quotes_historical_30d_29_raw")}
