@@ -4,19 +4,14 @@ config {
     schema: "mart_staging"
 }
 
+  /*
+  distinct is required to eliminate dups for any categories that were remapped in upstream map_category_ids
+  */
 SELECT
   /*
   keys
   */
-  map.cmc_id,
-  cat_dim.category_id,
-  /*
-  dates
-  */
-  map.ingestion_timestamp_utc
+  DISTINCT cmc_id,
+  category_id_new AS category_id
 FROM
-  ${ref("warehouse", "map_category_coin")} map
-LEFT JOIN
-  ${ref("mart_staging", "category_dim")} cat_dim
-USING
-  (category_id)
+  ${ref("mart_staging", "map_category_id")}

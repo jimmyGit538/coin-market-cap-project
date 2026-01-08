@@ -10,10 +10,11 @@ config {
   These are being consolidated into 'Privacy'.
   */
 SELECT
+  DISTINCT
   /*
   keys
   */
-  mc.category_id_new AS category_id,
+  mc.category_id_new as category_id,
   /*
   dimensions
   */
@@ -34,15 +35,10 @@ END
     WHEN mc.category_id_new ='11111' THEN 'Privacy'
     ELSE description
 END
-  AS description,
-  /*
-  dates
-  */
-  cd.last_updated,
-  cd.ingestion_timestamp_utc,
+  AS description
 FROM
   ${ref("warehouse", "category_dim")} cd
 LEFT JOIN
-  ${ref("mart_staging", "map_category_ids")} mc
+  ${ref("mart_staging", "map_category_id")} mc
 USING
   (category_id)
