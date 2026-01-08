@@ -13,14 +13,16 @@ config {
   if we only want performance of each coin, we need DISTINCT to remove duplicates when coins are in multiple categories
   */
 SELECT
-  DISTINCT date,
+  date,
   /*
   keys
   */
   cmc_id,
+  category_id,
   /*
   dim
   */
+  category_name,
   coin_name,
   coin_symbol,
   /*
