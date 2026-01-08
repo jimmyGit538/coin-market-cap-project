@@ -7,8 +7,8 @@ config {
 WITH
   cleaned AS (
   SELECT
-    * EXCEPT(quote_timestamp, category_id),
-    DATE(quote_timestamp) AS date
+    * EXCEPT(quote_date, category_id),
+    quote_date AS date
   FROM
     ${ref("quotes_historical_30d_29_raw_V4")}
   WHERE
@@ -44,5 +44,5 @@ WITH
   QUALIFY
     ROW_NUMBER() OVER(PARTITION BY coin_id, date
     ORDER BY
-      imported_at_utc DESC) = 1
+      ingestion_timestamp_utc DESC) = 1
       --using this QUALIFY statement to only pull the most current coin data in the case of multiple data inserts in one 24hr period.
