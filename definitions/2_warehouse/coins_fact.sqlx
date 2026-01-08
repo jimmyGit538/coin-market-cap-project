@@ -10,7 +10,7 @@ WITH
     * EXCEPT(quote_timestamp, category_id),
     DATE(quote_timestamp) AS date
   FROM
-    ${ref("quotes_historical_30d_29_raw")}
+    ${ref("quotes_historical_30d_29_raw_V4")}
   WHERE
     coin_id != 23624
     AND NOT (coin_id = 34472

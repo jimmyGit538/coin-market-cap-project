@@ -2,5 +2,5 @@ config {
     type: "declaration",
     database: "coinmarketcapproject",
     schema: "crypto_raw",
-    name: "quotes_historical_30d_29_raw"
+    name: "quotes_historical_30d_29_raw_V4"
 }

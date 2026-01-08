@@ -1,7 +1,0 @@
-config {
-  type: "declaration",
-  database: "coinmarketcapproject",
-  schema: "crypto_raw",
-  name: "categories_gcp_raw"
-}
-
