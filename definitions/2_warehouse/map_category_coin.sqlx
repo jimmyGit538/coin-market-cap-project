@@ -16,6 +16,29 @@ SELECT
   ingestion_timestamp_utc
 FROM
   ${ref("category_top20_coins_29_raw")}
-  --using this QUALIFY statement to only pull the most current coin data in the case of multiple data inserts in one 24hr period.
+  /*
+  -
+  -
+  -
+  -
+  --removing "wrapped" coins from "Privacy" categories
+  */
+WHERE
+  NOT( CAST(coin_id AS STRING) IN('3717',
+      '2396',
+      '28695',
+      '7192',
+      '34076',
+      '8925')
+    AND category_id IN('692b0302c0b341673d681a27',
+      '604f273debccdd50cd175fb0',
+      '692b02c1c0b341673d681a21') )
+      /*
+      -
+      -
+      -
+      -
+      using this QUALIFY statement to only pull the most current coin data in the case of multiple data inserts in one 24hr period.
+      */
 QUALIFY
   ROW_NUMBER() OVER(PARTITION BY cmc_id, category_id ORDER BY ingestion_timestamp_utc DESC) = 1
