@@ -9,7 +9,14 @@ SELECT
   keys
   */
   coin_id AS cmc_id,
-  category_id,
+  CASE
+    WHEN CAST(coin_id AS STRING) IN('5939', '32690', '21428')
+    --wrapped coins
+    THEN '5fb62883c9ddcc213ed13308'
+    --DeFi
+    ELSE category_id
+END
+  AS category_id,
   /*
   dates
   */
@@ -21,30 +28,30 @@ FROM
   -
   -
   -
-  --removing "wrapped" coins from "Privacy" categories
   */
 WHERE
+  --removing "wrapped" coins from "Privacy" categories. These coins still remain in "DeFi".
   NOT( CAST(coin_id AS STRING) IN(
   --Wrapped ETH, Bitcoin, etc.
   '3717',
-      '2396',
-      '28695',
-      '7192',
-      '34076',
-      '8925')
-    AND category_id IN(
-    --Privacy
-    '692b0302c0b341673d681a27',
-      '604f273debccdd50cd175fb0',
-      '692b02c1c0b341673d681a21',
-      --DePIN
-      '65f23191e6c934565751ce16') )
-      /*
-      -
-      -
-      -
-      -
-      using this QUALIFY statement to only pull the most current coin data in the case of multiple data inserts in one 24hr period.
-      */
-    QUALIFY
-      ROW_NUMBER() OVER(PARTITION BY cmc_id, category_id ORDER BY ingestion_timestamp_utc DESC) = 1
+  '2396',
+  '28695',
+  '7192',
+  '34076',
+  '8925')
+  AND category_id IN(
+  --Privacy
+  '692b0302c0b341673d681a27',
+    '604f273debccdd50cd175fb0',
+    '692b02c1c0b341673d681a21',
+    --DePIN
+    '65f23191e6c934565751ce16') )
+    /*
+    -
+    -
+    -
+    -
+    using this QUALIFY statement to only pull the most current coin data in the case of multiple data inserts in one 24hr period.
+    */
+  QUALIFY
+    ROW_NUMBER() OVER(PARTITION BY cmc_id, category_id ORDER BY ingestion_timestamp_utc DESC) = 1
