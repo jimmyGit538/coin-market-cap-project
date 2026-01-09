@@ -12,6 +12,7 @@ SELECT
   category_id,
   CASE
     WHEN category_id IN('692b0302c0b341673d681a27', '604f273debccdd50cd175fb0', '692b02c1c0b341673d681a21' ) THEN '11111'
+    WHEN category_id IN('6634dccba7b6f0637eec196a', '604f2753ebccdd50cd175fc1') THEN '22222'
     ELSE category_id
 END
   AS category_id_new

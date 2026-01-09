@@ -20,6 +20,7 @@ SELECT
   */
   CASE
     WHEN mc.category_id_new ='11111' THEN 'Privacy'
+    WHEN mc.category_id_new ='22222' THEN 'Stablecoins'
     ELSE name
 END
   AS name,
@@ -28,11 +29,13 @@ END
   */
   CASE
     WHEN mc.category_id_new ='11111' THEN 'Privacy'
+    WHEN mc.category_id_new ='22222' THEN 'Stablecoins'
     ELSE title
 END
   AS title,
   CASE
     WHEN mc.category_id_new ='11111' THEN 'Privacy'
+    WHEN mc.category_id_new ='22222' THEN 'Stablecoins'
     ELSE description
 END
   AS description
