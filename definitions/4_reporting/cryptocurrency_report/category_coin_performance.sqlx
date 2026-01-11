@@ -9,9 +9,6 @@ config {
     schema: "reporting"
 }
 
-  /*
-  if we only want performance of each coin, we need DISTINCT to remove duplicates when coins are in multiple categories
-  */
 SELECT
   date,
   /*
