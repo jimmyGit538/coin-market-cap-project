@@ -5,16 +5,32 @@ config {
 }
 
   /*
-  To avoid duplicate category names, using this view to consolidate categories where necessary.
+  CLEANING NOTES
+  -
+  -
+  To avoid duplicate category names, using this table to consolidate categories where necessary.
   For example, RAW data contains 'Privacy', 'Privacy Coin', and 'Privacy Blockchain'.
   These are being consolidated into 'Privacy'.
+  -
+  -
+  There are many coins assigned to multiple categories, making categorical analysis very challenging downstream.
+  Where applicable, reassigning categories.
   */
+  /*
+  -
+  -
+  -
+  ID mapping query
+  Maps new ids from 'map_category_id' to their newly created IDs.
+  */
+  WITH map AS
+  (
 SELECT
   DISTINCT
   /*
   keys
   */
-  mc.category_id_new as category_id,
+  mc.category_id_new AS category_id,
   /*
   dimensions
   */
@@ -45,3 +61,4 @@ LEFT JOIN
   ${ref("mart_staging", "map_category_id")} mc
 USING
   (category_id)
+),

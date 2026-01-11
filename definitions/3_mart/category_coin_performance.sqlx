@@ -8,32 +8,73 @@ config {
     schema: "mart"
 }
 
+  /*
+  serves as our baseline data, joined to all appropriate maps and dims
+  */
+WITH
+  base AS (
+  SELECT
+    coin.date,
+    d.date_isoweek,
+    d.date_month,
+    d.date_quarter,
+    d.date_year,
+    d.int_isoweek,
+    d.int_month,
+    d.int_quarter,
+    d.int_year,
+    catmap.category_id,
+    coin.cmc_id,
+    cat_dim.name AS category_name,
+    coin_dim.name AS coin_name,
+    coin_dim.symbol AS coin_symbol,
+    coin.market_cap AS coin_market_cap,
+    coin.price AS coin_price,
+    coin.volume_24h AS coin_volume_24h
+  FROM
+    ${ref("coins_fact")} coin
+  LEFT JOIN
+    ${ref("mart_staging", "date_dim")} AS d
+  USING
+    (date)
+  LEFT JOIN
+    ${ref("mart_staging", "map_category_coin")} catmap
+  USING
+    (cmc_id)
+  LEFT JOIN
+    ${ref("warehouse", "coins_dim")} coin_dim
+  USING
+    (cmc_id)
+  LEFT JOIN
+    ${ref("mart_staging", "category_dim")} cat_dim
+  ON
+    catmap.category_id=cat_dim.category_id),
+  /*
+  -
+  -
+  -
+  cleaning query
+  removing categories from certain coins that are assigned to multiple.
+  */
+  cleaning AS (
+  SELECT
+    base.* EXCEPT(category_name),
+    CASE
+    --iExec RLC
+      WHEN (cmc_id = 1637 AND category_name IN('AI & Big Data', 'AI Agents', 'NFTs & Collectibles', 'Oracles', 'Privacy')) THEN NULL
+      ELSE category_name
+  END
+    AS category_name
+  FROM
+    base )
+    /*
+    -
+    -
+    FINAL
+    */
 SELECT
-  coin.date,
-  d.* EXCEPT(date),
-  catmap.category_id,
-  coin.cmc_id,
-  cat_dim.name AS category_name,
-  coin_dim.name AS coin_name,
-  coin_dim.symbol AS coin_symbol,
-  coin.market_cap AS coin_market_cap,
-  coin.price AS coin_price,
-  coin.volume_24h AS coin_volume_24h
+  *
 FROM
-  ${ref("coins_fact")} coin
-LEFT JOIN
-  ${ref("mart_staging", "date_dim")} AS d
-USING
-  (date)
-LEFT JOIN
-  ${ref("mart_staging", "map_category_coin")} catmap
-USING
-  (cmc_id)
-LEFT JOIN
-  ${ref("warehouse", "coins_dim")} coin_dim
-USING
-  (cmc_id)
-LEFT JOIN
-  ${ref("mart_staging", "category_dim")} cat_dim
-ON
-  catmap.category_id=cat_dim.category_id
+  cleaning
+WHERE
+  category_name IS NOT NULL
