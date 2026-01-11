@@ -67,7 +67,7 @@ WITH
     -
     */
 SELECT
-  DISTINCT * EXCEPT(name)
+  * EXCEPT(name),
   CASE
     WHEN name IN ('DeFi', 'DeSci', 'DeFAI', 'DePIN', 'IoT', 'Privacy' ) THEN "Industry"
     WHEN name IN ('Move To Earn',
@@ -83,7 +83,7 @@ SELECT
     'Sports',
     'Gaming') THEN 'Sector'
     WHEN name IN ( 'Quantum-Resistant', 'Zero Knowledge Proofs', "AI Agents", 'AI & Big Data') THEN "Function"
-    WHEN category_name IN('Oracles',
+    WHEN name IN('Oracles',
     'Layer 1',
     'Layer 2') THEN 'Infrastructure'
 END
