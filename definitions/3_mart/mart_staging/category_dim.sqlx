@@ -67,7 +67,7 @@ WITH
     -
     */
 SELECT
-  * EXCEPT(name),
+  *,
   CASE
     WHEN name IN ('DeFi', 'DeSci', 'DeFAI', 'DePIN', 'IoT', 'Privacy' ) THEN "Industry"
     WHEN name IN ('Move To Earn',
