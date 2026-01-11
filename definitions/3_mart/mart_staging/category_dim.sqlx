@@ -23,42 +23,70 @@ config {
   ID mapping query
   Maps new ids from 'map_category_id' to their newly created IDs.
   */
-  WITH map AS
-  (
+WITH
+  map AS (
+  SELECT
+    DISTINCT
+    /*
+    keys
+    */
+    mc.category_id_new AS category_id,
+    /*
+    dimensions
+    */
+    CASE
+      WHEN mc.category_id_new ='11111' THEN 'Privacy'
+      WHEN mc.category_id_new ='22222' THEN 'Stablecoins'
+      ELSE name
+  END
+    AS name,
+    /*
+    -
+    */
+    CASE
+      WHEN mc.category_id_new ='11111' THEN 'Privacy'
+      WHEN mc.category_id_new ='22222' THEN 'Stablecoins'
+      ELSE title
+  END
+    AS title,
+    CASE
+      WHEN mc.category_id_new ='11111' THEN 'Privacy'
+      WHEN mc.category_id_new ='22222' THEN 'Stablecoins'
+      ELSE description
+  END
+    AS description
+  FROM
+    ${ref("warehouse", "category_dim")} cd
+  LEFT JOIN
+    ${ref("mart_staging", "map_category_id")} mc
+  USING
+    (category_id) )
+    /*
+    -
+    -
+    -
+    */
 SELECT
-  DISTINCT
-  /*
-  keys
-  */
-  mc.category_id_new AS category_id,
-  /*
-  dimensions
-  */
+  DISTINCT * EXCEPT(name)
   CASE
-    WHEN mc.category_id_new ='11111' THEN 'Privacy'
-    WHEN mc.category_id_new ='22222' THEN 'Stablecoins'
-    ELSE name
+    WHEN name IN ('DeFi', 'DeSci', 'DeFAI', 'DePIN', 'IoT', 'Privacy' ) THEN "Industry"
+    WHEN name IN ('Move To Earn',
+    'Memes',
+    'Storage',
+    'Lending & Borrowing',
+    'Gambling',
+    'Music',
+    'Stablecoins',
+    'Tokenized Assets',
+    'Insurance',
+    'NFTs & Collectibles',
+    'Sports',
+    'Gaming') THEN 'Sector'
+    WHEN name IN ( 'Quantum-Resistant', 'Zero Knowledge Proofs', "AI Agents", 'AI & Big Data') THEN "Function"
+    WHEN category_name IN('Oracles',
+    'Layer 1',
+    'Layer 2') THEN 'Infrastructure'
 END
-  AS name,
-  /*
-  -
-  */
-  CASE
-    WHEN mc.category_id_new ='11111' THEN 'Privacy'
-    WHEN mc.category_id_new ='22222' THEN 'Stablecoins'
-    ELSE title
-END
-  AS title,
-  CASE
-    WHEN mc.category_id_new ='11111' THEN 'Privacy'
-    WHEN mc.category_id_new ='22222' THEN 'Stablecoins'
-    ELSE description
-END
-  AS description
+  AS label
 FROM
-  ${ref("warehouse", "category_dim")} cd
-LEFT JOIN
-  ${ref("mart_staging", "map_category_id")} mc
-USING
-  (category_id)
-),
+  map
