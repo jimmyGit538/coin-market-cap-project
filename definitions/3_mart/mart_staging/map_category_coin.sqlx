@@ -15,3 +15,4 @@ SELECT
   category_id_new AS category_id
 FROM
   ${ref("mart_staging", "map_category_id")}
+
