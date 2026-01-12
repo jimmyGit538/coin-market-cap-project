@@ -1,0 +1,22 @@
+config {
+    project: "coin-market-cap-api",
+    type: "view",
+    tags: ["reporting"],
+    schema: "reporting"
+}
+
+SELECT
+  *
+FROM (
+  SELECT
+    *,
+    COUNT(DISTINCT category_id) OVER(PARTITION BY cmc_id) AS cat_count
+  FROM
+    `coin-market-cap-api.reporting.category_coin_performance` )
+WHERE
+  cat_count > 1
+  --
+  --
+ORDER BY
+  cmc_id,
+  category_id

@@ -20,6 +20,7 @@ SELECT
   dim
   */
   category_name,
+  category_label,
   coin_name,
   coin_symbol,
   /*

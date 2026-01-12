@@ -26,6 +26,7 @@ WITH
     catmap.category_id,
     coin.cmc_id,
     cat_dim.name AS category_name,
+    cat_dim.label AS category_label,
     coin_dim.name AS coin_name,
     coin_dim.symbol AS coin_symbol,
     coin.market_cap AS coin_market_cap,

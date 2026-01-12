@@ -11,6 +11,7 @@ config {
 SELECT
   ccp.date,
   ccp.category_name,
+  ccp.category_label,
   ccp.category_id,
   COUNT(DISTINCT cmc_id) AS num_tokens,
   SUM(coin_market_cap) AS category_market_cap,
