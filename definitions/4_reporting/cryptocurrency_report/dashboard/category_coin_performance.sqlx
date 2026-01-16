@@ -33,3 +33,4 @@ FROM
   ${ref("mart", "category_coin_performance")}
 WHERE
   date > '2025-01-09'
+ 

@@ -1,0 +1,65 @@
+config {
+    project: "coin-market-cap-api",
+    type: "table",
+    tags: ["reporting"],
+    bigquery: {
+        partitionBy: "date",
+        clusterBy: ["category_name"]
+    },
+    schema: "reporting"
+}
+
+WITH
+  category AS (
+  SELECT
+    date,
+    /*
+    keys
+    */
+    category_id,
+    /*
+    dim
+    */
+    category_name,
+    category_label,
+    /*
+    metrics
+    */
+    SUM(coin_volume_24h) AS volume_24h,
+    SUM(coin_market_cap) AS market_cap
+  FROM
+    ${ref("mart", "category_coin_performance")}
+  WHERE
+    date > '2025-01-09'
+  GROUP BY
+    ALL ),
+  /*
+  -
+  -
+  */
+  --normalized market cap
+  nmc AS (
+SELECT
+  category_id,
+  market_cap
+FROM
+  category
+WHERE
+  date = '2025-01-10' )
+  /*
+  -
+
+  -
+  */
+SELECT
+  date,
+  category.category_id,
+  category.category_name,
+  category.category_label,
+  category.market_cap/nmc.market_cap * 100 AS normalized_market_cap
+FROM
+  category
+LEFT JOIN
+  nmc
+USING
+  (category_id)

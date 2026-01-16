@@ -67,7 +67,12 @@ WITH
   END
     AS category_name
   FROM
-    base )
+    base
+  WHERE
+    /*
+    removing CST because it is difficult to find info on why is spiked 10x this year. Website looks like a meme token.
+    */
+    cmc_id NOT IN(38254) )
     /*
     -
     -
