@@ -4,7 +4,7 @@ config {
     tags: ["reporting"],
     bigquery: {
         partitionBy: "date",
-        clusterBy: ["category_name"]
+        clusterBy: ["coin_name"]
     },
     schema: "reporting"
 }
