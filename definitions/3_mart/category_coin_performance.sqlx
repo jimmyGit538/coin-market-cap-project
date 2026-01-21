@@ -63,6 +63,10 @@ WITH
     CASE
     --iExec RLC
       WHEN (cmc_id = 1637 AND category_name IN('AI & Big Data', 'AI Agents', 'NFTs & Collectibles', 'Oracles', 'Privacy')) THEN NULL
+      --Zcash, removed from quantum-resistant category. Keeping it in Privacy.
+      WHEN (cmc_id =1437
+      AND category_name IN('Quantum-Resistant',
+        'Zero Knowledge Proofs')) THEN NULL
       ELSE category_name
   END
     AS category_name

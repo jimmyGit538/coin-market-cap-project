@@ -10,18 +10,17 @@ config {
 }
 
 WITH
-  category AS (
+  coin AS (
   SELECT
     date,
     /*
     keys
     */
-    category_id,
+    cmc_id,
     /*
     dim
     */
-    category_name,
-    category_label,
+    coin_name,
     /*
     metrics
     */
@@ -31,6 +30,7 @@ WITH
     ${ref("mart", "category_coin_performance")}
   WHERE
     date > '2025-01-09'
+    AND category_name = 'Privacy'
   GROUP BY
     ALL ),
   /*
@@ -40,12 +40,13 @@ WITH
   --normalized market cap
   nmc AS (
 SELECT
-  category_id,
+  cmc_id,
   market_cap
 FROM
-  category
+  coin
 WHERE
-  date = '2025-01-10' )
+  date = '2025-01-10'
+  AND market_cap > 0)
   /*
   -
 
@@ -53,16 +54,13 @@ WHERE
   */
 SELECT
   date,
-  category.category_id,
-  category.category_name,
-  category.category_label,
-  ((category.market_cap/nmc.market_cap) -1)*100 AS normalized_market_cap,
-  AVG(((category.market_cap/nmc.market_cap) -1)*100) OVER(partition by category_id order by date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW ) as normalized_market_cap_7d
-
-
+  coin.cmc_id,
+  coin.coin_name,
+  ((coin.market_cap/NULLIF(nmc.market_cap,0)) -1)*100 AS normalized_market_cap,
+  AVG(((coin.market_cap/NULLIF(nmc.market_cap,0)) -1)*100) OVER(PARTITION BY cmc_id ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW ) AS normalized_market_cap_7d
 FROM
-  category
+  coin
 LEFT JOIN
   nmc
 USING
-  (category_id)
+  (cmc_id)
