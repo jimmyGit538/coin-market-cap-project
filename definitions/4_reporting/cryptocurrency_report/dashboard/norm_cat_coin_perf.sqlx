@@ -45,7 +45,21 @@ SELECT
 FROM
   category
 WHERE
-  date = '2025-01-10' )
+  date = '2025-01-10' ),
+  /*
+  -
+
+  -
+  */
+  --daily market cap
+  dmc AS (
+SELECT
+  date,
+  SUM(market_cap) AS total_market_cap
+FROM
+  category
+GROUP BY
+  ALL )
   /*
   -
 
@@ -56,13 +70,21 @@ SELECT
   category.category_id,
   category.category_name,
   category.category_label,
+  category.market_cap,
+  ----
+  (category.market_cap / (dmc.total_market_cap))*100 AS market_cap_share,
+  AVG((category.market_cap / (dmc.total_market_cap))*100) OVER(PARTITION BY category_id ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW ) AS market_cap_share_7d,
+  ----
   ((category.market_cap/nmc.market_cap) -1)*100 AS normalized_market_cap,
-  AVG(((category.market_cap/nmc.market_cap) -1)*100) OVER(partition by category_id order by date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW ) as normalized_market_cap_7d
-
-
+  AVG(((category.market_cap/nmc.market_cap) -1)*100) OVER(PARTITION BY category_id ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW ) AS normalized_market_cap_7d
+  ----
 FROM
   category
 LEFT JOIN
   nmc
 USING
   (category_id)
+LEFT JOIN
+  dmc
+USING
+  (date)
